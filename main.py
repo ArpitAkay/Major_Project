@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from student import Student
 
+
 class Face_Recognition_System:
     def __init__(self,root):
         self.root=root
