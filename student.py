@@ -1,7 +1,9 @@
+from ast import Try
 from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
+import mysql.connector
 
 
 class Student:
@@ -18,9 +20,9 @@ class Student:
         self.v_sem=StringVar()
         self.v_id=StringVar()
         self.v_name=StringVar()
-        self.v_sec=StringVar()
         self.v_roll=StringVar()
         self.v_gender=StringVar()
+        self.v_sec=StringVar()
         self.v_dob=StringVar()
         self.v_email=StringVar()
         self.v_phone=StringVar()
@@ -74,7 +76,7 @@ class Student:
         year_label.grid(row=2,column=0,padx=10,sticky=W)
 
         year_combo=ttk.Combobox(currentcourseframe,textvariable=self.v_year,font=("Book Antiqua",12,"bold"),width=18,state="read only")
-        year_combo["values"]=("Select Year","Computer Science","Information Technology","Electronics and Communication","Petroleum","Humanities and Social Sciences","Hotel Management and Hospitality","Biotechnology","Electrical","Management","Commerce","Nursing","Civil","Mechanical","Life Science","Paramedical Science","Computer Application")
+        year_combo["values"]=("Select Year","2017-2018","2018-2019","2019-2020","2020-2021","2021-2022")
         year_combo.current(0)
         year_combo.grid(row=2,column=1,padx=2,pady=10,sticky=W)
 
@@ -131,6 +133,11 @@ class Student:
         gender_entry=ttk.Entry(studentinfoframe,textvariable=self.v_gender,width=20,font=("Book Antiqua",12,"bold"))
         gender_entry.grid(row=4,column=1,padx=10,pady=5,sticky=W)
 
+        #gender_combo=ttk.Combobox(studentinfoframe,textvariable=self.v_gender,font=("Book Antiqua",12,"bold"),width=18,state="read only")
+        #gender_combo["values"]=("Select Gender","Male","Female","I prefer not to say")
+        #gender_combo.current(0)
+        #gender_combo.grid(row=4,column=1,padx=10,pady=5,sticky=W)
+
 
         #DateOfBirth
         dob_label=Label(studentinfoframe,text="Date Of Birth",font=("Book Antiqua",12,"bold"),bg="white")
@@ -171,12 +178,11 @@ class Student:
 
 
         #RadioButtons
-        self.v_radio1=StringVar()
-        rbtn1=ttk.Radiobutton(studentinfoframe,textvariable=self.v_radio1,text="Take Photo Sample",value="Yes")
+        self.v_radio=StringVar()
+        rbtn1=ttk.Radiobutton(studentinfoframe,variable=self.v_radio,text="Take Photo Sample",value="Yes")
         rbtn1.grid(row=7,column=1)
 
-        self.v_radio2=StringVar()
-        rbtn2=ttk.Radiobutton(studentinfoframe,textvariable=self.v_radio2,text="No Photo Sample",value="No")
+        rbtn2=ttk.Radiobutton(studentinfoframe,variable=self.v_radio,text="No Photo Sample",value="No")
         rbtn2.grid(row=7,column=2)
 
         #FirstButtonFrameInStudentInfoFrame
@@ -280,23 +286,40 @@ class Student:
         self.student_table.column("email",width=100)
         self.student_table.column("phone",width=100)
         self.student_table.column("address",width=100)
-        self.student_table.column("cc",width=100)
-        self.student_table.column("photo",width=100)
+        self.student_table.column("cc",width=120)
+        self.student_table.column("photo",width=150)
 
 
         self.student_table.pack(fill=BOTH,expand=1)
-
-
     def add_data(self):
         if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="" or self.v_roll.get()=="" or self.v_gender.get()=="" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
-            messagebox.showerror("Error","All Fields are required",parent=self.root)
+            messagebox.showerror("Error","All Fields are required",parent=self.root) 
         else:
-            pass                     
+            try:
+                conn=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")           
+                my_cursor=conn.cursor()
+                my_cursor.execute("INSERT INTO student VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(self.v_dep.get(),
+                                                                                                              self.v_course.get(),
+                                                                                                              self.v_year.get(),
+                                                                                                              self.v_sem.get(),
+                                                                                                              self.v_id.get(),
+                                                                                                              self.v_name.get(),
+                                                                                                              self.v_sec.get(),
+                                                                                                              self.v_roll.get(),
+                                                                                                              self.v_gender.get(),
+                                                                                                              self.v_dob.get(),
+                                                                                                              self.v_email.get(),
+                                                                                                              self.v_phone.get(),
+                                                                                                              self.v_address.get(),
+                                                                                                              self.v_cc.get(),
+                                                                                                              self.v_radio.get()))
 
 
-
-
-
+                conn.commit()
+                conn.close()
+                messagebox.showinfo("Success","Student details has been added Sucessfully",parent=self.root)
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
 
 
 if __name__=="__main__":
