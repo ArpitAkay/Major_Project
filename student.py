@@ -130,13 +130,10 @@ class Student:
         gender_label=Label(studentinfoframe,text="Gender",font=("Book Antiqua",12,"bold"),bg="white")
         gender_label.grid(row=4,column=0,padx=10,pady=5,sticky=W)
 
-        gender_entry=ttk.Entry(studentinfoframe,textvariable=self.v_gender,width=20,font=("Book Antiqua",12,"bold"))
-        gender_entry.grid(row=4,column=1,padx=10,pady=5,sticky=W)
-
-        #gender_combo=ttk.Combobox(studentinfoframe,textvariable=self.v_gender,font=("Book Antiqua",12,"bold"),width=18,state="read only")
-        #gender_combo["values"]=("Select Gender","Male","Female","I prefer not to say")
-        #gender_combo.current(0)
-        #gender_combo.grid(row=4,column=1,padx=10,pady=5,sticky=W)
+        gender_combo=ttk.Combobox(studentinfoframe,textvariable=self.v_gender,font=("Book Antiqua",12,"bold"),width=18,state="read only")
+        gender_combo["values"]=("Select Gender","Male","Female","I prefer not to say")
+        gender_combo.current(0)
+        gender_combo.grid(row=4,column=1,padx=10,pady=5,sticky=W)
 
 
         #DateOfBirth
@@ -296,7 +293,8 @@ class Student:
             messagebox.showerror("Error","All Fields are required",parent=self.root) 
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")           
+                conn=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+                #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
                 my_cursor=conn.cursor()
                 my_cursor.execute("INSERT INTO student VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(self.v_dep.get(),
                                                                                                               self.v_course.get(),
