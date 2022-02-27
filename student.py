@@ -1,4 +1,6 @@
 from ast import Try
+from multiprocessing import connection
+from sqlite3 import connect
 from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
@@ -114,9 +116,13 @@ class Student:
         section_label=Label(studentinfoframe,text="Section",font=("Book Antiqua",12,"bold"),bg="white")
         section_label.grid(row=2,column=0,padx=10,pady=5,sticky=W)
 
-        section_entry=ttk.Entry(studentinfoframe,textvariable=self.v_sec,width=20,font=("Book Antiqua",12,"bold"))
-        section_entry.grid(row=2,column=1,padx=10,pady=5,sticky=W)
+        #section_entry=ttk.Entry(studentinfoframe,textvariable=self.v_sec,width=20,font=("Book Antiqua",12,"bold"))
+        #section_entry.grid(row=2,column=1,padx=10,pady=5,sticky=W)
 
+        section_combo=ttk.Combobox(studentinfoframe,textvariable=self.v_sec,font=("Book Antiqua",12,"bold"),width=18,state="read only")
+        section_combo["values"]=("Select Section","A","B","C","D","E","F","G","H","I")
+        section_combo.current(0)
+        section_combo.grid(row=2,column=1,padx=10,pady=5,sticky=W)
 
         #RollNumber
         rno_label=Label(studentinfoframe,text="Roll Number",font=("Book Antiqua",12,"bold"),bg="white")
@@ -140,6 +146,26 @@ class Student:
         dob_label=Label(studentinfoframe,text="Date Of Birth",font=("Book Antiqua",12,"bold"),bg="white")
         dob_label.grid(row=5,column=0,padx=10,pady=5,sticky=W)
 
+        #from tkcalendar import Calendar
+        #self.root.geometry("250x250")
+        
+        #cal=Calendar(self.root,electmode='day',year=2001,month = 1,day=24)
+        
+        #cal.pack(pady = 20)
+        
+        #def grad_date():
+         #   date.config(text="Selected Date is: " + cal.get_date())
+        
+       
+        #Button(self.root,text = "Get Date",command=grad_date).pack(pady=20)
+        #date=Label(self.root,text="")
+        #date.pack(pady=20)
+        
+        
+        
+        
+        
+        
         dob_entry=ttk.Entry(studentinfoframe,textvariable=self.v_dob,width=20,font=("Book Antiqua",12,"bold"))
         dob_entry.grid(row=5,column=1,padx=10,pady=5,sticky=W)       
         
@@ -288,14 +314,20 @@ class Student:
 
 
         self.student_table.pack(fill=BOTH,expand=1)
+        self.student_table.bind("<ButtonRelease>",self.get_cursor)
+        self.data_fetch()
+    
+    
+    
+    
     def add_data(self):
         if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="" or self.v_roll.get()=="" or self.v_gender.get()=="" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
             messagebox.showerror("Error","All Fields are required",parent=self.root) 
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
-                #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
-                my_cursor=conn.cursor()
+                connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+               #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+                my_cursor=connection.cursor()
                 my_cursor.execute("INSERT INTO student VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(self.v_dep.get(),
                                                                                                               self.v_course.get(),
                                                                                                               self.v_year.get(),
@@ -313,12 +345,51 @@ class Student:
                                                                                                               self.v_radio.get()))
 
 
-                conn.commit()
-                conn.close()
+                connection.commit()
+                self.data_fetch()
+                connection.close()
                 messagebox.showinfo("Success","Student details has been added Sucessfully",parent=self.root)
             except Exception as es:
                 messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
 
+
+    #FuntionForFetchingData
+    def data_fetch(self):
+        connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+       #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+        my_cursor=connection.cursor()   
+        my_cursor.execute("select * from student")
+        data=my_cursor.fetchall()
+        
+        
+        if len(data)!=0:
+            self.student_table.delete(*self.student_table.get_children())
+            for i in data:
+                self.student_table.insert("",END,values=i)
+            connection.commit()
+        connection.close()     
+
+    
+    def get_cursor(self,event=""):
+        cursor_focus=self.student_table.focus()
+        content=self.student_table.item(cursor_focus)
+        data=content["values"]
+
+        self.v_dep.set(data[0]),
+        self.v_course.set(data[1]),
+        self.v_year.set(data[2]),
+        self.v_sem.set(data[3]),
+        self.v_id.set(data[4]),
+        self.v_name.set(data[5]),
+        self.v_sec.set(data[6]),
+        self.v_roll.set(data[7]),
+        self.v_gender.set(data[8]),
+        self.v_dob.set(data[9]),
+        self.v_email.set(data[10]),
+        self.v_phone.set(data[11]),
+        self.v_address.set(data[12]),
+        self.v_cc.set(data[13]),
+        self.v_radio.set(data[14]),
 
 if __name__=="__main__":
     root=Tk()
