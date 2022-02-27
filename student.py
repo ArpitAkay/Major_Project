@@ -215,7 +215,7 @@ class Student:
         save_btn=Button(btn1_frame,text="Save",command=self.add_data,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         save_btn.grid(row=0,column=0)
 
-        update_btn=Button(btn1_frame,text="Update",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        update_btn=Button(btn1_frame,text="Update",command=self.update_data,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         update_btn.grid(row=0,column=1)
 
         delete_btn=Button(btn1_frame,text="Delete",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
@@ -321,7 +321,7 @@ class Student:
     
     
     def add_data(self):
-        if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="" or self.v_roll.get()=="" or self.v_gender.get()=="" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
+        if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="Select Section" or self.v_roll.get()=="" or self.v_gender.get()=="Select Gender" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
             messagebox.showerror("Error","All Fields are required",parent=self.root) 
         else:
             try:
@@ -390,6 +390,53 @@ class Student:
         self.v_address.set(data[12]),
         self.v_cc.set(data[13]),
         self.v_radio.set(data[14]),
+
+    #UpdateButtonFunction
+    def update_data(self):
+        if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="Select Section" or self.v_roll.get()=="" or self.v_gender.get()=="Select Gender" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
+            messagebox.showerror("Error","All Fields are required",parent=self.root)
+        else:
+            try:
+                updat=messagebox.askyesno("updat","Do you want to update the details",parent=self.root)
+                if updat>0:
+                    connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+                   #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+                    my_cursor=connection.cursor()
+                    my_cursor.execute("UPDATE student SET Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Section=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,CC=%s,PhotoSample=%s where Student_id=%s",(
+                                                                                                                                                                                            self.v_dep.get(),
+                                                                                                                                                                                            self.v_course.get(),
+                                                                                                                                                                                            self.v_year.get(),
+                                                                                                                                                                                            self.v_sem.get(),
+                                                                                                                                                                                            self.v_name.get(),
+                                                                                                                                                                                            self.v_sec.get(),
+                                                                                                                                                                                            self.v_roll.get(),
+                                                                                                                                                                                            self.v_gender.get(),
+                                                                                                                                                                                            self.v_dob.get(),
+                                                                                                                                                                                            self.v_email.get(),
+                                                                                                                                                                                            self.v_phone.get(),
+                                                                                                                                                                                            self.v_address.get(),
+                                                                                                                                                                                            self.v_cc.get(),
+                                                                                                                                                                                            self.v_radio.get(),
+                                                                                                                                                                                            self.v_id.get()                                
+                                                                                                                                                                                                            ))
+                else:
+                    if not updat:
+                        return
+                messagebox.showinfo("Success","Details have been successfully updated")
+                connection.commit()
+                self.data_fetch()
+                connection.close()
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)    
+
+
+                                                                                                                                                                                                    
+
+
+
+
+
+
 
 if __name__=="__main__":
     root=Tk()
