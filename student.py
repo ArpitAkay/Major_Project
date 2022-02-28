@@ -6,7 +6,8 @@ from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 import mysql.connector
-
+from numpy import delete
+import cv2
 
 class Student:
     def __init__(self,root):
@@ -56,7 +57,7 @@ class Student:
         currentcourseframe.place(x=15,y=35,width=745,height=220)
 
         #DepartmentLabel
-        dept_label=Label(currentcourseframe,text="Deparatment",font=("Book Antiqua",12,"bold"),bg="white")
+        dept_label=Label(currentcourseframe,text="Department",font=("Book Antiqua",12,"bold"),bg="white")
         dept_label.grid(row=0,column=0,padx=10,sticky=W)
 
         dept_combo=ttk.Combobox(currentcourseframe,textvariable=self.v_dep,font=("Book Antiqua",12,"bold"),width=18,state="read only")
@@ -218,10 +219,10 @@ class Student:
         update_btn=Button(btn1_frame,text="Update",command=self.update_data,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         update_btn.grid(row=0,column=1)
 
-        delete_btn=Button(btn1_frame,text="Delete",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        delete_btn=Button(btn1_frame,text="Delete",command=self.delete_data,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         delete_btn.grid(row=0,column=2)
 
-        reset_btn=Button(btn1_frame,text="Reset",width=18,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        reset_btn=Button(btn1_frame,text="Reset",command=self.reset_data,width=18,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         reset_btn.grid(row=0,column=3)
 
 
@@ -229,7 +230,7 @@ class Student:
         btn2_frame=Frame(studentinfoframe,bd=2,relief=RIDGE,bg="white")
         btn2_frame.place(x=5,y=345,width=730,height=40)
 
-        takephoto_btn=Button(btn2_frame,text="Take Photo",width=36,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        takephoto_btn=Button(btn2_frame,text="Take Photo",command=self.generate_dataset,width=36,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         takephoto_btn.grid(row=0,column=4)
 
         updatephotosample_btn=Button(btn2_frame,text="Update Photo",width=36,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
@@ -430,11 +431,125 @@ class Student:
                 messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)    
 
 
-                                                                                                                                                                                                    
+    #DeleteButtonFunction
+    def delete_data(self):
+        if self.v_id.get()=="":
+            messagebox.showerror("Error","Please enter Student ID",parent=self.root)
+        else:
+            try:
+                delete=messagebox.askyesno("delete","Do you want to delete the Details",parent=self.root)
+                if delete>0:
+                    connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+                   #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+                    my_cursor=connection.cursor()
+                    sql="DELETE FROM student WHERE Student_id=%s"
+                    val=(self.v_id.get(),)
+                    my_cursor.execute(sql,val)
+                else:
+                    if not delete:
+                        return
+                connection.commit()
+                self.data_fetch()
+                connection.close()
+                messagebox.showinfo("Delete","Successfully deleted details",parent=self.root)
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
+
+    
+    #ResetButtonFunction
+    def reset_data(self):
+        self.v_dep.set("Select Department")
+        self.v_course.set("Select Course")
+        self.v_year.set("Select Year")
+        self.v_sem.set("Select Semester")
+        self.v_id.set("")
+        self.v_name.set("")
+        self.v_sec.set("Select Section")
+        self.v_roll.set("")
+        self.v_gender.set("Select Gender")
+        self.v_dob.set("")
+        self.v_email.set("")
+        self.v_phone.set("")
+        self.v_address.set("")
+        self.v_cc.set("")
+        self.v_radio.set("")
 
 
+    #TakePhotoSamples
+    def generate_dataset(self):
+        if self.v_dep.get()=="Select Department" or self.v_course.get()=="Select Course" or self.v_year.get()=="Select Year" or self.v_sem.get()=="Select Semester" or self.v_id.get()=="" or self.v_name.get()=="" or self.v_sec.get()=="Select Section" or self.v_roll.get()=="" or self.v_gender.get()=="Select Gender" or self.v_dob.get()=="" or self.v_email.get()=="" or self.v_phone.get()=="" or self.v_address.get()=="" or self.v_cc.get()=="":
+            messagebox.showerror("Error","All Fields are required",parent=self.root)
+        else:
+            try:
+                connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+               #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+                my_cursor=connection.cursor()
+                my_cursor.execute("SELECT * FROM student")
+                myresult=my_cursor.fetchall()
+                id=0
+                for x in myresult:
+                    id+=1
+                my_cursor.execute("UPDATE student SET Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Section=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,CC=%s,PhotoSample=%s where Student_id=%s",(
+                                                                                                                                                                                            self.v_dep.get(),
+                                                                                                                                                                                            self.v_course.get(),
+                                                                                                                                                                                            self.v_year.get(),
+                                                                                                                                                                                            self.v_sem.get(),
+                                                                                                                                                                                            self.v_name.get(),
+                                                                                                                                                                                            self.v_sec.get(),
+                                                                                                                                                                                            self.v_roll.get(),
+                                                                                                                                                                                            self.v_gender.get(),
+                                                                                                                                                                                            self.v_dob.get(),
+                                                                                                                                                                                            self.v_email.get(),
+                                                                                                                                                                                            self.v_phone.get(),
+                                                                                                                                                                                            self.v_address.get(),
+                                                                                                                                                                                            self.v_cc.get(),
+                                                                                                                                                                                            self.v_radio.get(),
+                                                                                                                                                                                            self.v_id.get()==id+1                                
+                                                                                                                                                                                            ))
+
+                connection.commit()
+                self.data_fetch()
+                self.reset_data()
+                connection.close()
+
+                #LoadPredefinedDataOnFaceFrontalsFromOpencv
+                face_classifier=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+
+                #FunctionForCroppingImage
+                def face_cropped(img):
+                    gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                    faces=face_classifier.detectMultiScale(gray,1.3,5)
+                    #scaling factor=1.3
+                    #Minimum Neighbour=5
+                    for (x,y,w,h) in faces:
+                        face_cropped=img[y:y+h,x:x+w]
+                        return face_cropped
+
+                cap=cv2.VideoCapture(0)
+                img_id=0
+                while True:
+                    ret,my_frame=cap.read()
+                    if face_cropped(my_frame) is not None:
+                        img_id+=1
+                        face=cv2.resize(face_cropped(my_frame),(450,450))
+                        face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+                        file_name_path="data/user."+str(id)+"."+str(img_id)+".jpg"
+                        cv2.imwrite(file_name_path,face)
+                        cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)
+                        cv2.imshow("Cropped Face",face)
+
+                    if cv2.waitKey(1)==13 or int(img_id)==100:
+                        break
+                cap.release()
+                cv2.destroyAllWindows()
+                messagebox.showinfo("Result","Generating Dataset Completed Successfully")
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
+
+                        
 
 
+                    
 
 
 
