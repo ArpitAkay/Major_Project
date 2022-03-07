@@ -46,7 +46,7 @@ class Face_Recognition_System:
 
 
 
-         #Attendance Button
+        #Attendance Button
         img6=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image5.jpg") 
         img6=img6.resize((220,220),Image.ANTIALIAS)
         self.photoimg6=ImageTk.PhotoImage(img6)
@@ -58,7 +58,7 @@ class Face_Recognition_System:
         b1_1.place(x=1100,y=690,width=220,height=40)
 
 
-         #Train Data Button
+        #Train Data Button
         img8=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image7.png") 
         img8=img8.resize((220,220),Image.ANTIALIAS)
         self.photoimg8=ImageTk.PhotoImage(img8)
@@ -70,7 +70,7 @@ class Face_Recognition_System:
         b1_1.place(x=200,y=690,width=220,height=40)
 
 
-         #Exit Button
+        #Exit Button
         img11=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image10.jpg") 
         img11=img11.resize((110,110),Image.ANTIALIAS)
         self.photoimg11=ImageTk.PhotoImage(img11)
