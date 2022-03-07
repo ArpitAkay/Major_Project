@@ -1,19 +1,19 @@
-from ast import Try
-from multiprocessing import connection
-from sqlite3 import connect
+#from ast import Try
+#from multiprocessing import connection
+#from sqlite3 import connect
 from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
 from tkinter import messagebox
 import mysql.connector
-from numpy import delete
+#from numpy import delete
 import cv2
 
 class Student:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1530x790+0+0")
-        self.root.title("Face Recognition System")
+        self.root.title("Student Management System")
 
 
         #VariablesForDataStorage
