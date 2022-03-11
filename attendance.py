@@ -1,3 +1,4 @@
+from mimetypes import init
 from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
@@ -5,7 +6,12 @@ from tkinter import messagebox
 import mysql.connector
 #from numpy import delete
 import cv2
+import os 
+import csv
+from tkinter import filedialog
 
+
+mydata=[]
 class Attendance:
     def __init__(self,root):
         self.root=root
@@ -87,7 +93,7 @@ class Attendance:
         btn1_frame=Frame(Left_frame,bd=2,relief=RIDGE,bg="white")
         btn1_frame.place(x=5,y=305,width=730,height=40)
 
-        import_btn=Button(btn1_frame,text="Import csv",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        import_btn=Button(btn1_frame,text="Import csv",command=self.Data_import,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         import_btn.grid(row=0,column=0)
 
         export_btn=Button(btn1_frame,text="Export csv",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
@@ -142,6 +148,27 @@ class Attendance:
 
 
         self.AttendanceReportTable.pack(fill=BOTH,expand=1) 
+
+
+    #FunctionForFetchingData
+    def fetchData(self,rows):
+        self.AttendanceReportTable.delete(*self.AttendanceReportTable.get_children())
+        for i in rows:
+            self.AttendanceReportTable.insert("",END,values=i)
+
+    #FunctionForImportingData
+    def Data_import(self):
+        global mydata
+        fln=filedialog.askopenfilename(initialdir=os.getcwd(),title="Open CSV",filetypes=(("CSV File","*.csv"),("ALL File","*.*")),parent=self.root)
+        with open(fln) as myfile:
+            csvread=csv.reader(myfile,delimiter=",")
+            for i in csvread:
+                mydata.append(i)
+            self.fetchData(mydata)
+
+
+
+
 
 
 
