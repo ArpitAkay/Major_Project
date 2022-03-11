@@ -2,6 +2,9 @@ from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
 from student import Student
+from traindata import train
+from face_recognition import Face_Recognition
+
 
 class Face_Recognition_System:
     def __init__(self,root):
@@ -10,7 +13,7 @@ class Face_Recognition_System:
         self.root.title("Face Recognition System")
 
         #BackgroundImage
-        bg_img=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image2.jpg") 
+        bg_img=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image1.jpg") 
         bg_img=bg_img.resize((1530,790),Image.ANTIALIAS)
         self.bg_photoimg=ImageTk.PhotoImage(bg_img)
 
@@ -20,8 +23,8 @@ class Face_Recognition_System:
         title_lbl=Label(self.root,text="AUTOMATIC ATTENDANCE MONITORING SYSTEM USING FACE DETECTION AND FACE RECOGNITION",font=("Book Antiqua",20,"bold"),bg="white",fg="blue")
         title_lbl.place(x=0,y=0,width=1530,height=45)
 
-        #Student Details Button
-        img4=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image3.jpg") 
+        #StudentDetailsButton
+        img4=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image2.jpg") 
         img4=img4.resize((220,220),Image.ANTIALIAS)
         self.photoimg4=ImageTk.PhotoImage(img4)
 
@@ -33,21 +36,21 @@ class Face_Recognition_System:
 
 
 
-        #Detection Face Button
-        img5=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image4.jpeg") 
+        #RecognitionFaceButton
+        img5=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image3.jpeg") 
         img5=img5.resize((220,220),Image.ANTIALIAS)
         self.photoimg5=ImageTk.PhotoImage(img5)
 
-        b1=Button(self.root,image=self.photoimg5,cursor="hand2")
+        b1=Button(self.root,image=self.photoimg5,command=self.face_data,cursor="hand2")
         b1.place(x=1100,y=200,width=220,height=220)
 
-        b1_1=Button(self.root,text="Face Detector",cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
+        b1_1=Button(self.root,text="Face Recognition",command=self.face_data,cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
         b1_1.place(x=1100,y=400,width=220,height=40)
 
 
 
-        #Attendance Button
-        img6=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image5.jpg") 
+        #AttendanceButton
+        img6=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image4.jpg") 
         img6=img6.resize((220,220),Image.ANTIALIAS)
         self.photoimg6=ImageTk.PhotoImage(img6)
 
@@ -59,19 +62,19 @@ class Face_Recognition_System:
 
 
         #Train Data Button
-        img8=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image7.png") 
+        img8=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image5.png") 
         img8=img8.resize((220,220),Image.ANTIALIAS)
         self.photoimg8=ImageTk.PhotoImage(img8)
 
-        b1=Button(self.root,image=self.photoimg8,cursor="hand2")
+        b1=Button(self.root,image=self.photoimg8,command=self.train_data,cursor="hand2")
         b1.place(x=200,y=490,width=220,height=220)
 
-        b1_1=Button(self.root,text="Train Data",cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
+        b1_1=Button(self.root,text="Train Data",command=self.train_data,cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
         b1_1.place(x=200,y=690,width=220,height=40)
 
 
         #Exit Button
-        img11=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image10.jpg") 
+        img11=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image6.jpg") 
         img11=img11.resize((110,110),Image.ANTIALIAS)
         self.photoimg11=ImageTk.PhotoImage(img11)
 
@@ -82,10 +85,23 @@ class Face_Recognition_System:
         b1_1.place(x=1400,y=690,width=110,height=30)
 
         
-    #FunctionForImportingStudentFile
+    #FunctionForImportingstudentFile
     def student_details(self):
         self.new_window=Toplevel(self.root)
         self.app=Student(self.new_window)
+
+    
+    #FunctionForOpeningtraindataFile
+    def train_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=train(self.new_window)
+
+
+    #FunctionForOpeningface_recognitionFile
+    def face_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Face_Recognition(self.new_window)
+
 
 
 

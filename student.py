@@ -34,7 +34,7 @@ class Student:
         
 
         #BackgroundImage
-        bg_img=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FaceRecognitionSystem\images\image2.jpg") 
+        bg_img=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image1.jpg") 
         bg_img=bg_img.resize((1530,790),Image.ANTIALIAS)
         self.bg_photoimg=ImageTk.PhotoImage(bg_img)
 
