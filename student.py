@@ -15,8 +15,7 @@ class Student:
         self.root.geometry("1530x790+0+0")
         self.root.title("Student Management System")
 
-
-        #VariablesForDataStorage
+        #TextVariablesForDataStorage
         self.v_dep=StringVar()
         self.v_course=StringVar()
         self.v_year=StringVar()
@@ -31,6 +30,8 @@ class Student:
         self.v_phone=StringVar()
         self.v_address=StringVar()
         self.v_cc=StringVar()
+        self.v_option=StringVar()
+        self.v_find=StringVar()
         
 
         #BackgroundImage
@@ -248,18 +249,18 @@ class Student:
         search_label=Label(searchframe,text="Search By :",font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         search_label.grid(row=0,column=0,padx=10,pady=5,sticky=W)
 
-        search_combo=ttk.Combobox(searchframe,font=("Book Antiqua",12,"bold"),width=15,state="read only")
-        search_combo["values"]=("Select","Roll Number","Phone Number")
+        search_combo=ttk.Combobox(searchframe,textvariable=self.v_option,font=("Book Antiqua",12,"bold"),width=15,state="read only")
+        search_combo["values"]=("Select","Roll","Phone")
         search_combo.current(0)
         search_combo.grid(row=0,column=1,padx=2,pady=10,sticky=W)
 
-        search_entry=ttk.Entry(searchframe,width=20,font=("Book Antiqua",12,"bold"))
+        search_entry=ttk.Entry(searchframe,textvariable=self.v_find,width=20,font=("Book Antiqua",12,"bold"))
         search_entry.grid(row=0,column=2,padx=10,pady=5,sticky=W)
 
-        search_btn=Button(searchframe,text="Search",width=12,font=("Book Antiqua",8,"bold"),bg="blue",fg="white")
+        search_btn=Button(searchframe,command=self.search_data,text="Search",width=12,font=("Book Antiqua",8,"bold"),bg="blue",fg="white")
         search_btn.grid(row=0,column=3,padx=4)
 
-        showall_btn=Button(searchframe,text="Show All",width=12,font=("Book Antiqua",8,"bold"),bg="blue",fg="white")
+        showall_btn=Button(searchframe,command=self.data_fetch,text="Show All",width=12,font=("Book Antiqua",8,"bold"),bg="blue",fg="white")
         showall_btn.grid(row=0,column=4,padx=4)
 
 
@@ -270,7 +271,7 @@ class Student:
         scroll_x=ttk.Scrollbar(tableframe,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(tableframe,orient=VERTICAL)
         
-        self.student_table=ttk.Treeview(tableframe,column=("dep","course","year","sem","id","name","roll","gender","sec","dob","email","phone","address","cc","photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.student_table=ttk.Treeview(tableframe,column=("dep","course","year","sem","id","name","sec","roll","gender","dob","email","phone","address","cc","photo"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
         
         scroll_x.pack(side=BOTTOM,fill=X)
         scroll_y.pack(side=RIGHT,fill=Y)
@@ -286,9 +287,9 @@ class Student:
         self.student_table.heading("sem",text="Semester")
         self.student_table.heading("id",text="Student ID")
         self.student_table.heading("name",text="Name")
+        self.student_table.heading("sec",text="Section")
         self.student_table.heading("roll",text="Roll Number")
         self.student_table.heading("gender",text="Gender")
-        self.student_table.heading("sec",text="Section")
         self.student_table.heading("dob",text="Date Of Birth")
         self.student_table.heading("email",text="Email")
         self.student_table.heading("phone",text="Phone Number")
@@ -297,8 +298,8 @@ class Student:
         self.student_table.heading("photo",text="Photo Sample Status")
         self.student_table["show"]="headings"
 
-        self.student_table.column("dep",width=100)
-        self.student_table.column("course",width=100)
+        self.student_table.column("dep",width=200)
+        self.student_table.column("course",width=200)
         self.student_table.column("year",width=100)
         self.student_table.column("sem",width=100)
         self.student_table.column("id",width=100)
@@ -307,7 +308,7 @@ class Student:
         self.student_table.column("gender",width=100)
         self.student_table.column("sec",width=100)
         self.student_table.column("dob",width=100)
-        self.student_table.column("email",width=100)
+        self.student_table.column("email",width=200)
         self.student_table.column("phone",width=100)
         self.student_table.column("address",width=100)
         self.student_table.column("cc",width=120)
@@ -545,9 +546,29 @@ class Student:
                 messagebox.showinfo("Result","Generating Dataset Completed Successfully")
             except Exception as es:
                 messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
+                               
+                                                                                                                                                                            
+    #SearchDataFunction
+    def search_data(self):
+        if self.v_option=="Select" or self.v_find=="":
+            messagebox.showerror("Error","Enter the required field")
+        else:
+            try:
+                connection=mysql.connector.connect(host="localhost",username="root",password="Kumar@arpit@24",database="face_recognition")
+               #conn=mysql.connector.connect(host="sql6.freesqldatabase.com",username="sql6475557",password="",database="sql6475557")           
+                my_cursor=connection.cursor()
+                my_cursor.execute("select * from student where " +str(self.v_option.get())+" LIKE '%"+str(self.v_find.get())+"%'")
+                data=my_cursor.fetchall()
+                if len(data)!=0:
+                    self.student_table.delete(*self.student_table.get_children())
+                    for i in data:
+                        self.student_table.insert("",END,values=i)
+                    connection.commit()
+                connection.close()
+            except Exception as es:
+                messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
 
-                        
-
+        
 
                     
 

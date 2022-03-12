@@ -1,3 +1,4 @@
+from math import fabs
 from mimetypes import init
 from tkinter import*
 from tkinter import ttk
@@ -17,6 +18,21 @@ class Attendance:
         self.root=root
         self.root.geometry("1530x790+0+0")
         self.root.title("Attendance Management System")
+
+        #TextVariablesForDataStorage
+        self.v_aid=StringVar()
+        self.v_aroll=StringVar()
+        self.v_aname=StringVar()
+        self.v_adep=StringVar()
+        self.v_atime=StringVar()
+        self.v_adate=StringVar()
+        self.v_astatus=StringVar()
+
+
+
+
+
+
 
 
         #BackgroundImage
@@ -42,49 +58,64 @@ class Attendance:
         Aid_label=Label(Left_frame,text="Attendance ID",font=("Book Antiqua",12,"bold"),bg="white")
         Aid_label.grid(row=0,column=0,padx=10,pady=5,sticky=W)
 
-        Aid_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
+        Aid_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_aid,font=("Book Antiqua",12,"bold"))
         Aid_entry.grid(row=0,column=1,padx=10,pady=5,sticky=W)
 
         #RollNumber
         roll_label=Label(Left_frame,text="Roll Number",font=("Book Antiqua",12,"bold"),bg="white")
         roll_label.grid(row=1,column=0,padx=10,pady=5,sticky=W)
 
-        roll_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
+        roll_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_aroll,font=("Book Antiqua",12,"bold"))
         roll_entry.grid(row=1,column=1,padx=10,pady=5,sticky=W)
 
         #Name
         name_label=Label(Left_frame,text="Name",font=("Book Antiqua",12,"bold"),bg="white")
         name_label.grid(row=2,column=0,padx=10,pady=5,sticky=W)
 
-        name_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
+        name_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_aname,font=("Book Antiqua",12,"bold"))
         name_entry.grid(row=2,column=1,padx=10,pady=5,sticky=W)
         
         #Department
         dep_label=Label(Left_frame,text="Department",font=("Book Antiqua",12,"bold"),bg="white")
         dep_label.grid(row=3,column=0,padx=10,pady=5,sticky=W)
 
-        dep_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
-        dep_entry.grid(row=3,column=1,padx=10,pady=5,sticky=W)
+        #dep_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_adep,font=("Book Antiqua",12,"bold"))
+        #dep_entry.grid(row=3,column=1,padx=10,pady=5,sticky=W)
+
+        dep_combo=ttk.Combobox(Left_frame,textvariable=self.v_adep,font=("Book Antiqua",12,"bold"),width=18,state="read only")
+        dep_combo["values"]=("Select Deparatment","Engineering","Management","Arts and Science","Business Studies","Fine Arts and Communication")
+        dep_combo.current(0)
+        dep_combo.grid(row=3,column=1,padx=10,pady=5,sticky=W)
+
+
+
+
+
+
+
+
+
+
         
         #Time
         time_label=Label(Left_frame,text="Time",font=("Book Antiqua",12,"bold"),bg="white")
         time_label.grid(row=4,column=0,padx=10,pady=5,sticky=W)
 
-        time_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
+        time_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_atime,font=("Book Antiqua",12,"bold"))
         time_entry.grid(row=4,column=1,padx=10,pady=5,sticky=W)
         
         #Date
         date_label=Label(Left_frame,text="Date",font=("Book Antiqua",12,"bold"),bg="white")
         date_label.grid(row=5,column=0,padx=10,pady=5,sticky=W)
 
-        date_entry=ttk.Entry(Left_frame,width=20,font=("Book Antiqua",12,"bold"))
+        date_entry=ttk.Entry(Left_frame,width=20,textvariable=self.v_adate,font=("Book Antiqua",12,"bold"))
         date_entry.grid(row=5,column=1,padx=10,pady=5,sticky=W)
         
         #AttendanceStatus
         as_label=Label(Left_frame,text="Attendance Status",font=("Book Antiqua",12,"bold"),bg="white")
         as_label.grid(row=6,column=0,padx=10,pady=5,sticky=W)
 
-        as_combo=ttk.Combobox(Left_frame,font=("Book Antiqua",12,"bold"),width=18,state="read only")
+        as_combo=ttk.Combobox(Left_frame,textvariable=self.v_astatus,font=("Book Antiqua",12,"bold"),width=18,state="read only")
         as_combo["values"]=("Select Attendance Status","Present","Absent")
         as_combo.current(0)
         as_combo.grid(row=6,column=1,padx=10,pady=5,sticky=W)
@@ -93,16 +124,16 @@ class Attendance:
         btn1_frame=Frame(Left_frame,bd=2,relief=RIDGE,bg="white")
         btn1_frame.place(x=5,y=305,width=730,height=40)
 
-        import_btn=Button(btn1_frame,text="Import csv",command=self.Data_import,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        import_btn=Button(btn1_frame,text="Import csv",command=self.importCsv,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         import_btn.grid(row=0,column=0)
 
-        export_btn=Button(btn1_frame,text="Export csv",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        export_btn=Button(btn1_frame,text="Export csv",command=self.exportCsv,width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         export_btn.grid(row=0,column=1)
 
         update_btn=Button(btn1_frame,text="Update",width=17,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         update_btn.grid(row=0,column=2)
 
-        reset_btn=Button(btn1_frame,text="Reset",width=18,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
+        reset_btn=Button(btn1_frame,text="Reset",command=self.reset_data,width=18,font=("Book Antiqua",12,"bold"),bg="blue",fg="white")
         reset_btn.grid(row=0,column=3)
 
 
@@ -140,14 +171,15 @@ class Attendance:
         self.AttendanceReportTable.column("id",width=100)
         self.AttendanceReportTable.column("roll",width=100)
         self.AttendanceReportTable.column("name",width=100)
-        self.AttendanceReportTable.column("dep",width=100)
+        self.AttendanceReportTable.column("dep",width=200)
         self.AttendanceReportTable.column("time",width=100)
         self.AttendanceReportTable.column("date",width=100)
         self.AttendanceReportTable.column("attendance",width=120)
 
 
 
-        self.AttendanceReportTable.pack(fill=BOTH,expand=1) 
+        self.AttendanceReportTable.pack(fill=BOTH,expand=1)
+        self.AttendanceReportTable.bind("<ButtonRelease>",self.get_cursor)
 
 
     #FunctionForFetchingData
@@ -157,15 +189,55 @@ class Attendance:
             self.AttendanceReportTable.insert("",END,values=i)
 
     #FunctionForImportingData
-    def Data_import(self):
+    def importCsv(self):
         global mydata
+        mydata.clear()
         fln=filedialog.askopenfilename(initialdir=os.getcwd(),title="Open CSV",filetypes=(("CSV File","*.csv"),("ALL File","*.*")),parent=self.root)
         with open(fln) as myfile:
             csvread=csv.reader(myfile,delimiter=",")
             for i in csvread:
                 mydata.append(i)
             self.fetchData(mydata)
+    
 
+    #FunctionForExportingData
+    def exportCsv(self):
+        try:
+            if len(mydata)<1:
+                messagebox.showerror("No Data","No Data Found",parent=self.root)
+                return False
+            fln=filedialog.asksaveasfilename(initialdir=os.getcwd(),title="Open CSV",filetypes=(("CSV File","*.csv"),("ALL File","*.*")),parent=self.root)
+            with open(fln,mode="w",newline="") as myfile:
+                exp_write=csv.writer(myfile,delimiter=",")
+                for i in mydata:
+                    exp_write.writerow(i)
+                messagebox.showinfo("Data Export","Data Exported to "+os.path.basename(fln)+" successfully")
+        except Exception as es:
+            messagebox.showerror("Error",f"Due To : {str(es)}",parent=self.root)
+
+    def get_cursor(self,events=""):
+        cursor_row=self.AttendanceReportTable.focus()
+        content=self.AttendanceReportTable.item(cursor_row)
+        rows=content['values']
+        self.v_aid.set(rows[0]),
+        self.v_aroll.set(rows[1]),
+        self.v_aname.set(rows[2]),
+        self.v_adep.set(rows[3]),
+        self.v_atime.set(rows[4]),
+        self.v_adate.set(rows[5]),
+        self.v_astatus.set(rows[6]),
+
+
+    #ResetButtonFunction
+    def reset_data(self):
+        self.v_aid.set("")
+        self.v_aroll.set("")
+        self.v_aname.set("")
+        self.v_adep.set("Select Department")
+        self.v_atime.set("")
+        self.v_adate.set("")
+        self.v_astatus.set("Select Attendance Status")
+        
 
 
 

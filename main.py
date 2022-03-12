@@ -1,3 +1,5 @@
+import string
+from time import strftime
 from tkinter import*
 from tkinter import ttk
 from PIL import Image,ImageTk
@@ -5,6 +7,9 @@ from student import Student
 from traindata import train
 from face_recognition import Face_Recognition
 from attendance import Attendance
+import tkinter
+from time import strftime
+from datetime import datetime
 
 
 class Face_Recognition_System:
@@ -23,6 +28,25 @@ class Face_Recognition_System:
 
         title_lbl=Label(self.root,text="AUTOMATIC ATTENDANCE MONITORING SYSTEM USING FACE DETECTION AND FACE RECOGNITION",font=("Book Antiqua",20,"bold"),bg="white",fg="blue")
         title_lbl.place(x=0,y=0,width=1530,height=45)
+
+        def time():
+            string=strftime('%H:%M:%S %p')
+            lbl.config(text=string)
+            lbl.after(1000,time)
+        
+        lbl=Label(self.root,font=("Book Antiqua",15,"bold"),bg="dark blue",fg="white")
+        lbl.place(x=0,y=45,width=110,height=50)
+        time()
+
+        def date():
+            string=strftime('%d-%m-%Y')
+            lbl.config(text=string)
+            lbl.after(1000,date)
+        lbl=Label(self.root,font=("Book Antiqua",15,"bold"),bg="dark blue",fg="white")
+        lbl.place(x=0,y=95,width=110,height=50)
+        date()
+
+
 
         #StudentDetailsButton
         img4=Image.open(r"C:\Users\DELL\OneDrive\Desktop\FRS\Major_Project\images\image2.jpg") 
@@ -79,11 +103,12 @@ class Face_Recognition_System:
         img11=img11.resize((110,110),Image.ANTIALIAS)
         self.photoimg11=ImageTk.PhotoImage(img11)
 
-        b1=Button(self.root,image=self.photoimg11,cursor="hand2")
+        b1=Button(self.root,image=self.photoimg11,command=self.exitscreen,cursor="hand2")
         b1.place(x=1400,y=590,width=110,height=110)
 
-        b1_1=Button(self.root,text="Exit",cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
+        b1_1=Button(self.root,text="Exit",command=self.exitscreen,cursor="hand2",font=("Book Antiqua",15,"bold"),bg="darkblue",fg="white")
         b1_1.place(x=1400,y=690,width=110,height=30)
+
 
         
     #FunctionForImportingstudentFile
@@ -109,7 +134,13 @@ class Face_Recognition_System:
         self.new_window=Toplevel(self.root)
         self.app=Attendance(self.new_window)
 
-
+    #FunctionExitButton
+    def exitscreen(self):
+        self.exitscreen=tkinter.messagebox.askyesno("Exit","Do you want to Exit?",parent=self.root)
+        if self.exitscreen>0:
+            self.root.destroy()
+        else:
+            return
 
 
 
