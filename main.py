@@ -38,13 +38,13 @@ class Face_Recognition_System:
         lbl.place(x=0,y=45,width=110,height=50)
         time()
 
-        def date():
-            string=strftime('%d-%m-%Y')
-            lbl.config(text=string)
-            lbl.after(1000,date)
-        lbl=Label(self.root,font=("Book Antiqua",15,"bold"),bg="dark blue",fg="white")
-        lbl.place(x=0,y=95,width=110,height=50)
-        date()
+        #def date1():
+            #string=strftime('%d-%m-%Y')
+            #lbl.config(text=string)
+            #lbl.after(1000,date1)
+        #lbl=Label(self.root,font=("Book Antiqua",15,"bold"),bg="dark blue",fg="white")
+        #lbl.place(x=0,y=95,width=110,height=50)
+        #date1()
 
 
 
